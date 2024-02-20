@@ -60,18 +60,9 @@ function removeFromCart(id: number) {
     localStorage.setItem('cart', JSON.stringify(items))
 }
 
-const { execute } = await DeezFetch($config.public.apiBase + '/api/orders', {
+const { execute, data } = await DeezFetch($config.public.apiBase + '/api/orders', {
     method: 'POST',
     body: items,
-    onResponse({ response }) {
-        const data = response._data as APIResponse
-        if (data?.statusCode === 200) {
-            localStorage.removeItem('cart')
-            items.splice(0, items.length)
-            alert('An SMS with your order details has been sent to your phone number')
-            navigateTo('/orders')
-        }
-    },
     onResponseError(error) {
         console.error(error.response._data)
         alert('An error occurred while processing your order')
@@ -81,5 +72,14 @@ const { execute } = await DeezFetch($config.public.apiBase + '/api/orders', {
 async function checkout() {
     if (items.length === 0) return
     await execute()
+
+    const res = data.value as APIResponse
+
+    if (res.statusCode === 200 || res.statusCode === 201) {
+        localStorage.removeItem('cart')
+        items.splice(0, items.length)
+        alert('An SMS with your order details has been sent to your phone number')
+        navigateTo('/orders')
+    }
 }
 </script>

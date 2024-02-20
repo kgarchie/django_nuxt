@@ -18,14 +18,17 @@ def login(user: Customer) -> str:
 def logout(token: str | None) -> None:
     if not token:
         return
-    session = Session.objects.get(token=token)
-    session.valid = False
-    session.save()
-
-
-def authenticate(username: str, password: str) -> Customer:
     try:
-        user = Customer.objects.get(username=username)
+        session = Session.objects.get(token=token)
+        session.valid = False
+        session.save()
+    except Session.DoesNotExist:
+        return
+
+
+def authenticate(email: str, password: str) -> Customer:
+    try:
+        user = Customer.objects.get(email=email)
     except Customer.DoesNotExist:
         return None
     if user.check_password(password):
@@ -44,9 +47,9 @@ def get_bearer_token(request) -> str:
 
 
 class CustomerView(APIView):
-    def get(self, request, pk=None):
-        if pk:
-            customer = Customer.objects.get(pk=pk)
+    def get(self, request, uuid=None):
+        if uuid:
+            customer = Customer.objects.get(uuid=uuid)
             serializer = CustomerSerializer(customer)
             return Response(serializer.data)
         customers = Customer.objects.all()
@@ -128,11 +131,11 @@ class OrderView(APIView):
             return Response(format(401, "No Token"), status=401)
 
         customer = Session.objects.get(token=customer).user
-
         for item in items:
-            Order.objects.create(customer=customer, product_id=item["id"])
+            product_id = item['id']
+            Order.objects.create(customer=customer, product_id=product_id)
 
-        SMS().send(customer.phone, f"Your order with id {self.id} has been placed successfully.")
+        SMS().send(customer.phone, f"Your order has been placed successfully.")
         return Response(format(201, "Order placed successfully"), status=201)
 
     def put(self, request, pk):
@@ -154,7 +157,7 @@ class LoginView(APIView):
         data = request.data
         email = data.get("email")
         password = data.get("password")
-        user = authenticate(username=email, password=password)
+        user = authenticate(email=email, password=password)
         if user:
             token = login(user)
             return Response(format(200, token), status=200)
