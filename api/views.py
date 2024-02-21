@@ -132,11 +132,15 @@ class OrderView(APIView):
 
         customer = Session.objects.get(token=customer).user
         for item in items:
-            product_id = item['id']
-            Order.objects.create(customer=customer, product_id=product_id)
+            try:
+                product = Product.objects.get(pk=item.get("id"))
+                Order.objects.create(customer=customer, product=product)
+            except Product.DoesNotExist:
+                return Response(format(400, "Invalid product"), status=400)
+            
 
         SMS().send(customer.phone, f"Your order has been placed successfully.")
-        return Response(format(201, "Order placed successfully"), status=201)
+        return Response(format(201, "Order created"), status=201)
 
     def put(self, request, pk):
         saved_order = Order.objects.get(pk=pk)
@@ -173,7 +177,7 @@ class LogoutView(APIView):
 
 class SignupView(APIView):
     def post(self, request):
-        data = request.data
+        data = request.data.copy()
         data["username"] = data.get("email")
 
         serializer = CustomerSerializer(data=data)
@@ -200,8 +204,7 @@ class RefreshView(APIView):
             session = Session.objects.get(token=token)
         except Session.DoesNotExist:
             return Response(format(400, "Invalid token"), status=400)
-        
+
         if not session.valid:
             return Response(format(401, "Invalid token"), status=401)
         return Response(format(200, CustomerSerializer(session.user).data), status=200)
-    

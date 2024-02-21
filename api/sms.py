@@ -15,15 +15,16 @@ class SMS:
         self.transporter.initialize(username, api_key)
 
     def send(self, phone, message):
-        # if not self.transporter:
-        #     print(f"Redirected SMS to StdOut {phone}\n: {message}")
-        #     return
+        if not self.transporter:
+            print(f"Redirected SMS to StdOut {phone}\n: {message}")
+            return
         
-        # try:
-        #     response = self.transporter.SMS.send(message, [phone], os.environ.get("AFRICASTALKING_SENDER_ID"))
-        #     print(response)
-        # except Exception as e:
-        #     print(f"Error sending SMS to {phone}\n: {e}")
-        #     print(f"Message: {message}")
-        print(f"Redirected SMS to StdOut {phone}\n: {message}")
+        try:
+            response = self.transporter.SMS.send(message, [phone], os.environ.get("AFRICASTALKING_SENDER_ID"))
+            print(response)
+        except Exception as e:
+            print(f"Error sending SMS to {phone}\n: {e}")
+            print(f"Message: {message}")
+        
+        print(f"Redirected SMS to {phone}:\n {message}")
         

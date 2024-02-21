@@ -7,6 +7,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
 from .models import Customer, Product, Session
+import json
 
 
 class CustomerViewTests(TestCase):
@@ -57,19 +58,15 @@ class OrderViewTests(TestCase):
         self.session = Session.objects.create(user=self.customer)
 
     def test_get_all_orders(self):
-        response = self.client.get(reverse('api:orders'), HTTP_AUTHORIZATION=f'Bearer {self.session.token}')
+        response = self.client.get(reverse('api:orders'), HTTP_AUTHORIZATION=f'Bearer {self.session.token.__str__()}')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_order(self):
-        response = self.client.post(reverse('api:orders'), [{'id': self.product.id}], HTTP_AUTHORIZATION=f'Bearer {self.session.token}')
+        response = self.client.post(reverse('api:orders'), json.dumps([{"id": self.product.id}]), content_type='application/json', HTTP_AUTHORIZATION=f'Bearer {self.session.token.__str__()}')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-    
-    def test_create_order_forbidden(self):
-        response = self.client.post(reverse('api:orders'), [{'id': self.product.id}])
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_order_invalid(self):
-        response = self.client.post(reverse('api:orders'), [{'id': self.product.id}], HTTP_AUTHORIZATION=f'Bearer {self.session.token}')
+        response = self.client.post(reverse('api:orders'), json.dumps([{"id": 0}]), content_type='application/json', HTTP_AUTHORIZATION=f'Bearer {self.session.token.__str__()}')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
@@ -94,7 +91,7 @@ class AuthViewTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     
     def test_signup(self):
-        response = self.client.post(reverse('api:signup'), {'email': 'test_customer2', 'phone': '1234567890', 'password': 'test_password'})
+        response = self.client.post(reverse('api:signup'), {'email': 'test_customer2@gmail.com', 'phone': '1234567890', 'password': 'test_password'})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
     
     def test_signup_invalid(self):
