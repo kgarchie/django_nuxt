@@ -26,7 +26,7 @@ const cartHas = computed(() => (item: any) => cart.some((i: any) => i.id === ite
 
         <hr class="mb-4">
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-2">
             <div v-for="item in items" :key="item.id" class="bg-white p-4 rounded-lg border border-gray-200"
                 style="max-width: 330px;">
                 <img :src="`${$config.public.apiBase}${item.image}`" alt="" class="w-full h-40 object-cover rounded-lg">

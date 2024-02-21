@@ -10,3 +10,5 @@ COPY . /app/
 
 RUN pnpm install \
     && pnpm prune
+
+CMD [ "pnpm", "run", "dev" ]
