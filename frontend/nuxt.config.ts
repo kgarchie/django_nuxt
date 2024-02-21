@@ -6,8 +6,5 @@ export default defineNuxtConfig({
       apiBase: process.env.API_BASE || 'http://api:8000'
     }
   },
-  modules: ['@nuxtjs/tailwindcss'],
-  devServer: {
-    port: process?.env?.PORT ? parseInt(process.env.PORT) : 3000
-  }
+  modules: ['@nuxtjs/tailwindcss']
 })
