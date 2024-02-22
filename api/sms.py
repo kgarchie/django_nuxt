@@ -20,7 +20,7 @@ class SMS:
             return
         
         try:
-            response = self.transporter.SMS.send(message, [phone], os.environ.get("AFRICASTALKING_SENDER_ID"))
+            response = self.transporter.SMS.send(message, ["+" + phone], os.environ.get("AFRICASTALKING_SENDER_ID"))
             print(response)
         except Exception as e:
             print(f"Error sending SMS to {phone}\n: {e}")
