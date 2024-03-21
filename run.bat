@@ -1,0 +1,56 @@
+@echo off
+setlocal
+
+set COLOR_RESET=[0m
+set COLOR_RED=[31m
+set COLOR_GREEN=[32m
+set COLOR_BLUE=[34m
+
+python --version 2>NUL
+if errorlevel 1 (
+    echo %COLOR_RED%Python is not installed. Please download and install Python from:%COLOR_RESET%
+    echo %COLOR_GREEN%https://www.python.org/downloads/%COLOR_RESET%
+    exit 1
+) else (
+    echo %COLOR_GREEN%Python is installed, proceeding to check for Node.js%COLOR_RESET%
+)
+
+where node 2>NUL
+if errorlevel 1 (
+    echo %COLOR_RED%Node.js is not installed. Please download and install Node.js from:%COLOR_RESET%
+    echo %COLOR_GREEN%https://nodejs.org/en/download/%COLOR_RESET%
+    exit 1
+) else (
+    echo %COLOR_GREEN%Node.js is installed, proceeding.%COLOR_RESET%
+)
+
+set VENV_FOLDER=venv
+
+if exist %VENV_FOLDER% (
+    echo %COLOR_GREEN%Virtual environment exists. Activating...%COLOR_RESET%
+) else (
+    echo %COLOR_BLUE%Creating virtual environment%COLOR_RESET%
+    python -m venv %VENV_FOLDER%
+)
+
+call %VENV_FOLDER%/Scripts/activate
+
+pip install -r requirements.txt
+
+:: Start the backend server
+start /b cmd /c "python manage.py runserver"
+
+:: Start the frontend server
+start /b cmd /c "cd .\frontend && pnpm install && pnpm run dev"
+
+echo.
+echo %COLOR_BLUE%Deactivating virtual environment%COLOR_RESET%
+
+echo.
+echo %COLOR_GREEN%All done!%COLOR_RESET%
+
+timeout /t 20 /nobreak > NUL
+echo %COLOR_BLUE%Close this terminal session to stop the services.%COLOR_RESET%
+
+deactivate
+endlocal

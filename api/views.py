@@ -26,7 +26,7 @@ def logout(token: str | None) -> None:
         return
 
 
-def authenticate(email: str, password: str) -> Customer:
+def authenticate(email: str, password: str) -> Any | None:
     try:
         user = Customer.objects.get(email=email)
     except Customer.DoesNotExist:
