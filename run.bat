@@ -6,13 +6,13 @@ set COLOR_RED=[31m
 set COLOR_GREEN=[32m
 set COLOR_BLUE=[34m
 
-python --version 2>NUL
+python3 --version 2>NUL
 if errorlevel 1 (
     echo %COLOR_RED%Python is not installed. Please download and install Python from:%COLOR_RESET%
     echo %COLOR_GREEN%https://www.python.org/downloads/%COLOR_RESET%
     exit 1
 ) else (
-    echo %COLOR_GREEN%Python is installed, proceeding to check for Node.js%COLOR_RESET%
+    echo %COLOR_GREEN%Python 3 is installed, proceeding to check for Node.js%COLOR_RESET%
 )
 
 where node 2>NUL
@@ -30,15 +30,17 @@ if exist %VENV_FOLDER% (
     echo %COLOR_GREEN%Virtual environment exists. Activating...%COLOR_RESET%
 ) else (
     echo %COLOR_BLUE%Creating virtual environment%COLOR_RESET%
-    python -m venv %VENV_FOLDER%
+    python3 -m venv %VENV_FOLDER%
 )
 
 call %VENV_FOLDER%/Scripts/activate
 
-pip install -r requirements.txt
+corepack enable
+
+pip3 install -r requirements.txt
 
 :: Start the backend server
-start /b cmd /c "python manage.py runserver"
+start /b cmd /c "python3 manage.py runserver"
 
 :: Start the frontend server
 start /b cmd /c "cd .\frontend && pnpm install && pnpm run dev"

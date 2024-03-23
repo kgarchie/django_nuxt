@@ -1,12 +1,15 @@
 #!/bin/bash
 
+VENV_FOLDER="venv"
+P_VERSION=$(python3 --version 2>&1 | grep -oE '[0-9]+\.[0-9]+')
+
 # Check if Python is installed
-if ! command -v python &>/dev/null; then
-    echo "Python is not installed. Please download and install Python from:"
+if ! command -v python3 &>/dev/null; then
+    echo "Python 3 is not installed. Please download and install Python from:"
     echo "https://www.python.org/downloads/"
     exit 1
 else
-    echo "Python is installed, proceeding to check for Node.js"
+    echo "Python 3 is installed, proceeding to check for Node.js"
 fi
 
 # Check if Node.js is installed
@@ -18,24 +21,36 @@ else
     echo "Node.js is installed, proceeding."
 fi
 
-VENV_FOLDER=venv
-
 # Check if virtual environment exists
-if [ -d "$VENV_FOLDER" ]; then
-    echo "Virtual environment exists. Activating..."
+if [ ! -d "$VENV_FOLDER" ]; then
+    echo "Creating virtual environment..."
+    
+    sudo apt install python$P_VERSION-venv
+
+    python3 -m venv $VENV_FOLDER
 else
-    echo "Creating virtual environment"
-    python -m venv $VENV_FOLDER
+    echo "Virtual environment exists, proceeding."
 fi
 
+
+# Activate virtual environment
 source $VENV_FOLDER/bin/activate
 
-pip install -r requirements.txt
+corepack enable
 
-# Start the backend server in the background
-python manage.py runserver &
+# Install PsycoPG2
+sudo apt-get install libpq-dev python3-dev
 
-# Start the frontend server in the background
-(cd frontend && npm install && npm run dev) &
+# Install Python dependencies
+pip3 install -r requirements.txt
 
+# Install Node.js dependencies
+cd frontend && pnpm install && cd ..
+
+# Run the application
+python3 manage.py runserver 8000 &
+
+cd frontend && pnpm run dev && cd ..
+
+# Deactivate virtual environment
 deactivate
