@@ -1,6 +1,6 @@
 import type { UseFetchOptions } from "#app";
 
-export async function DeezFetch<T>(url: string | Ref, options?: UseFetchOptions<T>) {
+export async function DeFetch<T>(url: string | Ref, options?: UseFetchOptions<T>) {
     return useFetch<T>(url, {
         headers: {
             'Content-Type': 'application/json',

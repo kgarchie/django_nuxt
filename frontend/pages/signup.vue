@@ -22,7 +22,7 @@ const body = computed(() => {
 
 const errors = ref(new Set())
 
-const { execute } = await DeezFetch($config.public.apiBase + '/api/auth/signup', {
+const { execute } = await DeFetch(route('/api/auth/signup'), {
     method: 'POST',
     body: body,
     async onResponse({ response }) {

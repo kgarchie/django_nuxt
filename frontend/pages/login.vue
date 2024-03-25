@@ -11,7 +11,7 @@ const details = reactive({
     password: ''
 })
 
-const { execute } = await DeezFetch($config.public.apiBase + '/api/auth/login', {
+const { execute } = await DeFetch(route('/api/auth/login'), {
     method: 'POST',
     body: details,
     async onResponse({ response }) {

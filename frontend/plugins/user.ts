@@ -6,27 +6,15 @@ export default defineNuxtPlugin(async (app) => {
     if (
         (
             !user ||
-            !user?.token ||
-            user?.token?.trim() === "undefined" ||
-            user?.token?.trim() === "null" ||
-            user?.token?.trim() === "false" ||
-            user?.token?.trim() === "" ||
-            !user?.email ||
-            !user?.email?.trim() ||
-            user?.email?.trim() === "undefined" ||
-            user?.email?.trim() === "null" ||
-            user?.email?.trim() === "false" ||
-            user?.email?.trim() === ""
+            isNone(user?.token) ||
+            isNone(user?.email)
         ) &&
         (
             token &&
-            token.trim() !== "undefined" &&
-            token.trim() !== "null" &&
-            token.trim() !== "false" &&
-            token.trim() !== ""
+            isNone(token)
         )
     ) {
-        const { execute, data } = await DeezFetch<APIResponse>($config.public.apiBase + '/api/auth/refresh', {
+        const { execute } = await DeFetch<APIResponse>($config.public.apiBase + '/api/auth/refresh', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -37,6 +25,12 @@ export default defineNuxtPlugin(async (app) => {
                 if (data.statusCode !== 200) {
                     setAuthCookie("", 0)
                     useUser().value = {} as UserState
+                } else if (data.statusCode === 200) {
+                    useUser().value = {
+                        email: data.body.email,
+                        token: token,
+                        is_admin: data.body?.is_admin ?? false
+                    }
                 }
             },
             onResponseError({ error }) {
@@ -45,15 +39,5 @@ export default defineNuxtPlugin(async (app) => {
         });
 
         await execute()
-
-        const { value } = data
-        if(value && value.statusCode === 200) {
-            console.log(value.body)
-            useUser().value = {
-                email: value.body.email,
-                token: token,
-                is_admin: value.body?.is_admin || false
-            }
-        }
     }
 })

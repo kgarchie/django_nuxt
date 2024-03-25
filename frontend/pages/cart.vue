@@ -1,6 +1,6 @@
 <template>
     <Title>Cart</Title>
-    <div class="container mx-auto p-4">
+    <div class="container flex flex-col mx-auto p-4">
         <div class="flex mb-4">
             <button class="px-4 py-2 bg-amber-500 text-white rounded hover:bg-red-600 ml-5" @click="clearCart">
                 Clear Cart
@@ -17,33 +17,32 @@
             </button>
         </div>
         <hr class="mb-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div v-for="item in items" :key="item.id" class="bg-white p-4 rounded-lg border border-gray-200"
-                style="max-width: 330px;">
-                <img :src="`${$config.public.apiBase}${item.image}`" alt="" class="w-full h-40 object-cover rounded-lg">
-                <div class="mt-4">
-                    <h3 class="text-lg font-semibold" style="text-transform: capitalize;">{{ item.name }}</h3>
-                    <p class="text-sm text-gray-500">{{ item.description }}</p>
-                    <div class="flex justify-between items-center mt-4">
-                        <p class="text-lg font-bold">{{ item.price }}</p>
-                        <p class="text-amber-500">{{ item.stock }} in Stock</p>
-                        <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                            @click="removeFromCart(item.id)">Remove</button>
+        <div class="flex flex-wrap gap-4">
+            <ClientOnly>
+                <div v-for="item in items" :key="item.id" class="bg-white p-4 rounded-lg border border-gray-200 w-[350px] px-4"
+                    style="max-width: 330px;">
+                    <img :src="route(item.image)" alt="" class="w-full h-40 object-cover rounded-lg">
+                    <div class="mt-4">
+                        <h3 class="text-lg font-semibold" style="text-transform: capitalize;">{{ item.name }}</h3>
+                        <p class="text-sm text-gray-500">{{ item.description }}</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <p class="text-lg font-bold">{{ item.price }}</p>
+                            <p class="text-amber-500">{{ item.stock }} in Stock</p>
+                            <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                                @click="removeFromCart(item.id)">Remove</button>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </ClientOnly>
         </div>
     </div>
 </template>
 <script setup lang="ts">
 import type { APIResponse } from '~/typings';
-import { assertAuth } from '~/utils/auth';
 
 definePageMeta({
     layout: 'dash'
 })
-
-assertAuth("orders")
 
 const items = reactive(process.client ? JSON.parse(localStorage.getItem('cart') || '[]') : [])
 
@@ -60,7 +59,7 @@ function removeFromCart(id: number) {
     localStorage.setItem('cart', JSON.stringify(items))
 }
 
-const { execute, data } = await DeezFetch($config.public.apiBase + '/api/orders', {
+const { execute, data } = await DeFetch(route('/api/orders'), {
     method: 'POST',
     body: items,
     onResponseError(error) {
@@ -70,6 +69,7 @@ const { execute, data } = await DeezFetch($config.public.apiBase + '/api/orders'
 })
 
 async function checkout() {
+    assertAuth('cart')
     if (items.length === 0) return
     await execute()
 

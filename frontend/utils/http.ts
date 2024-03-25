@@ -3,7 +3,7 @@ const decoder = new TextDecoder()
 
 export async function readStream(reader: ReadableStreamDefaultReader | null, callback: (data: APIResponse) => void, fallback?: (text: string) => void) {
     if (!reader) throw new Error('Reader is not defined')
-    const {done, value} = await reader.read()
+    const { done, value } = await reader.read()
 
     if (done) return
 
@@ -22,4 +22,17 @@ export async function readStream(reader: ReadableStreamDefaultReader | null, cal
     }
 
     return readStream(reader, callback, fallback)
+}
+
+function apiBase() {
+    if (process.client) return useRuntimeConfig().public.apiBaseClient
+    return useRuntimeConfig().public.apiBaseServer
+}
+
+export function route(path: string) {
+    let base = apiBase()
+
+    if (!path.startsWith('/')) path = `/${path}`
+    if (base.endsWith('/')) base = base.slice(0, -1)
+    return `${base}${path}`
 }

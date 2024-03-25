@@ -41,7 +41,7 @@ export function userIsAuthenticated() {
 }
 
 export function logout() {
-    $fetch<APIResponse>($config.public.apiBase + "/api/auth/logout", {
+    $fetch<APIResponse>(route("/api/auth/logout"), {
         headers: {
             "Authorization": "Bearer " + getAuthToken(),
         },
@@ -61,8 +61,8 @@ export function logout() {
     })
 }
 
-export function assertAuth(redirect: string) {
+export async function assertAuth(redirect: string) {
     if (!userIsAuthenticated()) {
-        navigateTo("/login?redirect=" + redirect)
+        await navigateTo("/login?redirect=" + redirect)
     }
 }
