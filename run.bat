@@ -5,6 +5,8 @@ set COLOR_RESET=[0m
 set COLOR_RED=[31m
 set COLOR_GREEN=[32m
 set COLOR_BLUE=[34m
+set LOCATION=%CD%
+set VENV_FOLDER=venv
 
 python3 --version 2>NUL
 if errorlevel 1 (
@@ -24,8 +26,6 @@ if errorlevel 1 (
     echo %COLOR_GREEN%Node.js is installed, proceeding.%COLOR_RESET%
 )
 
-set VENV_FOLDER=venv
-
 if exist %VENV_FOLDER% (
     echo %COLOR_GREEN%Virtual environment exists. Activating...%COLOR_RESET%
 ) else (
@@ -33,26 +33,26 @@ if exist %VENV_FOLDER% (
     python3 -m venv %VENV_FOLDER%
 )
 
-call %VENV_FOLDER%/Scripts/activate
-
-corepack enable
-
+call %LOCATION%\%VENV_FOLDER%\Scripts\activate
 pip3 install -r requirements.txt
 
+powershell -Command "Start-Process cmd -ArgumentList '/c corepack enable' -Verb RunAs" 2>NUL
+if errorlevel 1 (
+    echo %COLOR_RED%Failed to enable corepack. Please run the command manually as admin.%COLOR_RESET%
+    echo %COLOR_GREEN%corepack enable%COLOR_RESET%
+    exit 1
+) else (
+    echo %COLOR_GREEN%corepack enabled%COLOR_RESET%
+)
+
 :: Start the backend server
-start /b cmd /c "python3 manage.py runserver"
+start /b cmd /c "%LOCATION%\%VENV_FOLDER%\Scripts\python manage.py runserver"
 
 :: Start the frontend server
-start /b cmd /c "cd .\frontend && pnpm install && pnpm run dev"
-
-echo.
-echo %COLOR_BLUE%Deactivating virtual environment%COLOR_RESET%
+start /b cmd /c "cd .\frontend && pnpm install && npm run dev"
 
 echo.
 echo %COLOR_GREEN%All done!%COLOR_RESET%
 
-timeout /t 20 /nobreak > NUL
-echo %COLOR_BLUE%Close this terminal session to stop the services.%COLOR_RESET%
-
-deactivate
+echo %COLOR_BLUE%Close this terminal session to stop the services. They are running...%COLOR_RESET%
 endlocal
