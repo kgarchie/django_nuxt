@@ -27,7 +27,7 @@ definePageMeta({
     layout: 'dash'
 })
 
-const { body: items } = await $fetch<APIResponse>('/api/orders', {
+const { data } = await useFetch<APIResponse>('/api/orders', {
     method: 'GET',
     headers: {
         'Authorization': 'Bearer ' + getAuthToken() || ''
@@ -36,6 +36,6 @@ const { body: items } = await $fetch<APIResponse>('/api/orders', {
         console.error(error)
     }
 })
-
+const items = data.value?.body
 console.log(items)
 </script>

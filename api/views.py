@@ -51,7 +51,7 @@ class CustomerView(APIView):
         if uuid:
             customer = Customer.objects.get(uuid=uuid)
             serializer = CustomerSerializer(customer)
-            return Response(serializer.data)
+            return Response(format(200, serializer.data))
         customers = Customer.objects.all()
         serializer = CustomerSerializer(customers, many=True)
         return Response(format(200, serializer.data))
@@ -84,7 +84,7 @@ class ProductView(APIView):
         if pk:
             product = Product.objects.get(pk=pk)
             serializer = ProductSerializer(product)
-            return Response(serializer.data)
+            return Response(format(200, serializer.data))
         products = Product.objects.all()
         serializer = ProductSerializer(products, many=True)
         return Response(format(200, serializer.data))
@@ -149,6 +149,7 @@ class OrderView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(format(200, serializer.data))
+        return Response(format(400, None), status=400)
 
     def delete(self, request, pk):
         order = Order.objects.get(pk=pk)

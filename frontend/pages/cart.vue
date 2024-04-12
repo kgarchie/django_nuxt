@@ -59,7 +59,7 @@ function removeFromCart(id: number) {
     localStorage.setItem('cart', JSON.stringify(items))
 }
 
-const { execute, data } = await DeFetch('/api/orders', {
+const { execute, data } = await unFetch('/api/orders', {
     method: 'POST',
     body: items,
     onResponseError(error) {

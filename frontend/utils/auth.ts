@@ -41,7 +41,7 @@ export function userIsAuthenticated() {
 }
 
 export function logout() {
-    $fetch<APIResponse>(route("/api/auth/logout"), {
+    $fetch<APIResponse>("/api/auth/logout", {
         headers: {
             "Authorization": "Bearer " + getAuthToken(),
         },

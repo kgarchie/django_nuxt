@@ -36,13 +36,18 @@ if exist %VENV_FOLDER% (
 call %LOCATION%\%VENV_FOLDER%\Scripts\activate
 pip3 install -r requirements.txt
 
-powershell -Command "Start-Process cmd -ArgumentList '/c corepack enable' -Verb RunAs" 2>NUL
+where pnpm 2>NUL
 if errorlevel 1 (
-    echo %COLOR_RED%Failed to enable corepack. Please run the command manually as admin.%COLOR_RESET%
-    echo %COLOR_GREEN%corepack enable%COLOR_RESET%
-    exit 1
+    powershell -Command "Start-Process cmd -ArgumentList '/c corepack enable' -Verb RunAs" 2>NUL
+    if errorlevel 1 (
+        echo %COLOR_RED%Failed to enable corepack. Please run the command manually as admin.%COLOR_RESET%
+        echo %COLOR_GREEN%corepack enable%COLOR_RESET%
+        exit 1
+    ) else (
+        echo %COLOR_GREEN%corepack enabled%COLOR_RESET%
+    )
 ) else (
-    echo %COLOR_GREEN%corepack enabled%COLOR_RESET%
+    echo %COLOR_GREEN%pnpm is installed, proceeding.%COLOR_RESET%
 )
 
 :: Start the backend server

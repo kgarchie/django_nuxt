@@ -22,7 +22,7 @@ const body = computed(() => {
 
 const errors = ref(new Set())
 
-const { execute } = await DeFetch('/api/auth/signup', {
+const { execute } = await unFetch('/api/auth/signup', {
     method: 'POST',
     body: body,
     async onResponse({ response }) {
