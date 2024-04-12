@@ -11,7 +11,7 @@ const details = reactive({
     password: ''
 })
 
-const { execute } = await DeFetch(route('/api/auth/login'), {
+const { execute } = await DeFetch('/api/auth/login', {
     method: 'POST',
     body: details,
     async onResponse({ response }) {

@@ -23,16 +23,3 @@ export async function readStream(reader: ReadableStreamDefaultReader | null, cal
 
     return readStream(reader, callback, fallback)
 }
-
-function apiBase() {
-    if (process.client) return useRuntimeConfig().public.apiBaseClient
-    return useRuntimeConfig().public.apiBaseServer
-}
-
-export function route(path: string) {
-    let base = apiBase()
-
-    if (!path.startsWith('/')) path = `/${path}`
-    if (base.endsWith('/')) base = base.slice(0, -1)
-    return `${base}${path}`
-}

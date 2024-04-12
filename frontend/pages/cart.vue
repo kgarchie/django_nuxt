@@ -21,7 +21,7 @@
             <ClientOnly>
                 <div v-for="item in items" :key="item.id" class="bg-white p-4 rounded-lg border border-gray-200 w-[350px] px-4"
                     style="max-width: 330px;">
-                    <img :src="route(item.image)" alt="" class="w-full h-40 object-cover rounded-lg">
+                    <img :src="item.image" alt="" class="w-full h-40 object-cover rounded-lg">
                     <div class="mt-4">
                         <h3 class="text-lg font-semibold" style="text-transform: capitalize;">{{ item.name }}</h3>
                         <p class="text-sm text-gray-500">{{ item.description }}</p>
@@ -59,7 +59,7 @@ function removeFromCart(id: number) {
     localStorage.setItem('cart', JSON.stringify(items))
 }
 
-const { execute, data } = await DeFetch(route('/api/orders'), {
+const { execute, data } = await DeFetch('/api/orders', {
     method: 'POST',
     body: items,
     onResponseError(error) {

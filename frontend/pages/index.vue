@@ -3,7 +3,7 @@ import { type APIResponse } from '~/typings';
 definePageMeta({
     layout: 'dash'
 })
-const { body } = await $fetch<APIResponse>(route('/api/products'))
+const { body } = await $fetch<APIResponse>('/api/products')
 
 const items = useState(() => body)
 
@@ -31,7 +31,7 @@ const cartHas = computed(() => (item: any) => cart.some((i: any) => i.id === ite
         <div class="flex flex-wrap gap-4">
             <div v-for="item in items" :key="item.id" class="bg-white p-4 rounded-lg border border-gray-200 w-[350px] px-4"
                 style="max-width: 330px;">
-                <img :src="`${route(item.image)}`" alt="" class="w-full h-40 object-cover rounded-lg">
+                <img :src="item.image" alt="" class="w-full h-40 object-cover rounded-lg">
                 <div class="mt-4">
                     <h3 class="text-lg font-semibold" style="text-transform: capitalize;">{{ item.name }}</h3>
                     <p class="text-sm text-gray-500">{{ item.description }}</p>
