@@ -51,13 +51,13 @@ if errorlevel 1 (
 )
 
 :: Start the backend server
-start /b cmd /c "%LOCATION%\%VENV_FOLDER%\Scripts\python manage.py runserver"
+start cmd /k "%LOCATION%\%VENV_FOLDER%\Scripts\python manage.py runserver"
 
 :: Start the frontend server
-start /b cmd /c "cd .\frontend && pnpm install && npm run dev"
+start cmd /k "cd .\frontend && pnpm install && npm run dev"
 
 echo.
 echo %COLOR_GREEN%All done!%COLOR_RESET%
 
-echo %COLOR_BLUE%Close this terminal session to stop the services. They are running...%COLOR_RESET%
+echo %COLOR_BLUE%Close the popped up terminal sessions to stop the services. They are running, minimise them for now...%COLOR_RESET%
 endlocal

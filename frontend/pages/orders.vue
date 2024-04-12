@@ -21,11 +21,11 @@
 <script setup lang="ts">
 import type { APIResponse } from '~/typings';
 
-await assertAuth('orders')
-
 definePageMeta({
     layout: 'dash'
 })
+
+await assertAuth('orders')
 
 const { data } = await useFetch<APIResponse>('/api/orders', {
     method: 'GET',
@@ -37,5 +37,4 @@ const { data } = await useFetch<APIResponse>('/api/orders', {
     }
 })
 const items = data.value?.body
-console.log(items)
 </script>
