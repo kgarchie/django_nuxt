@@ -62,6 +62,10 @@ function removeFromCart(id: number) {
 const { execute, data } = await unFetch('/api/orders', {
     method: 'POST',
     body: items,
+    headers: {
+        'Authorization': 'Bearer ' + getAuthToken() || '',
+        'X-CSRFToken': getCSRFToken()
+    },
     onResponseError(error) {
         console.error(error.response._data)
         alert('An error occurred while processing your order')

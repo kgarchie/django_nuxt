@@ -3,6 +3,7 @@ import os
 
 
 class SMS:
+    transporter = None
     def __init__(self):
         username = os.environ.get("AFRICASTALKING_USERNAME")
         api_key = os.environ.get("AFRICASTALKING_API_KEY")

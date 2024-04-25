@@ -13,6 +13,9 @@ const details = reactive({
 
 const { execute } = await unFetch('/api/auth/login', {
     method: 'POST',
+    headers: {
+        "X-CSRFToken": getCSRFToken()
+    },
     body: details,
     async onResponse({ response }) {
         const data = response?._data as APIResponse

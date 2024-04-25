@@ -27,6 +27,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+]
 
 # Application definition
 

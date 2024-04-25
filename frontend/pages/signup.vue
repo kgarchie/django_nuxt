@@ -24,6 +24,9 @@ const errors = ref(new Set())
 
 const { execute } = await unFetch('/api/auth/signup', {
     method: 'POST',
+    headers: {
+        "X-CSRFToken": getCSRFToken()
+    },
     body: body,
     async onResponse({ response }) {
         const data = response._data as APIResponse

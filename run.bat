@@ -54,7 +54,7 @@ if errorlevel 1 (
 start cmd /k "%LOCATION%\%VENV_FOLDER%\Scripts\python manage.py runserver"
 
 :: Start the frontend server
-start cmd /k "cd .\frontend && pnpm install && npm run dev"
+start cmd /k "cd .\frontend && pnpm install && pnpm run dev"
 
 echo.
 echo %COLOR_GREEN%All done!%COLOR_RESET%

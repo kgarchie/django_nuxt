@@ -66,3 +66,8 @@ export async function assertAuth(redirect: string) {
         await navigateTo("/login?redirect=" + redirect)
     }
 }
+
+export function getCSRFToken(){
+    const token = useCookie('csrftoken').value
+    return token?.toString() || ''
+}

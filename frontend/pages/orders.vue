@@ -30,7 +30,8 @@ await assertAuth('orders')
 const { data } = await useFetch<APIResponse>('/api/orders', {
     method: 'GET',
     headers: {
-        'Authorization': 'Bearer ' + getAuthToken() || ''
+        'Authorization': 'Bearer ' + getAuthToken() || '',
+        'X-CSRFToken': getCSRFToken()
     },
     onRequestError({ error }) {
         console.error(error)

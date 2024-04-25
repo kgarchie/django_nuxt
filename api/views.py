@@ -135,9 +135,10 @@ class OrderView(APIView):
             try:
                 product = Product.objects.get(pk=item.get("id"))
                 Order.objects.create(customer=customer, product=product)
+                product.stock -= 1
+                product.save()
             except Product.DoesNotExist:
                 return Response(format(400, "Invalid product"), status=400)
-            
 
         SMS().send(customer.phone, f"Your order has been placed successfully.")
         return Response(format(201, "Order created"), status=201)

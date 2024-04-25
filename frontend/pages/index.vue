@@ -5,13 +5,11 @@ definePageMeta({
 })
 const { data } = await useFetch<APIResponse>('/api/products')
 
-const items = data.value?.body
-
 const cart = reactive(process.client ? JSON.parse(localStorage.getItem('cart') || '[]') : [])
 
 function addToCart(id: number) {
   if (!process.client) return
-  cart.push(items.value.find((item: any) => item.id === id))
+  cart.push(data.value?.body.find((item: any) => item.id === id))
   localStorage.setItem('cart', JSON.stringify(cart))
 }
 
@@ -22,15 +20,14 @@ const cartHas = computed(() => (item: any) => cart.some((i: any) => i.id === ite
   <div class="container flex flex-col mx-auto p-4">
 
     <div class="flex justify-end mb-4">
-      <NuxtLink to="/cart" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">View Cart
-      </NuxtLink>
+      <NuxtLink to="/cart" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">View Cart </NuxtLink>
     </div>
 
     <hr class="mb-4">
 
     <div class="flex flex-wrap gap-4">
-      <div v-for="item in items" :key="item.id" class="bg-white p-4 rounded-lg border border-gray-200 w-[350px] px-4"
-        style="max-width: 330px;">
+      <div v-for="item in data?.body" :key="item.id"
+        class="bg-white p-4 rounded-lg border border-gray-200 w-[350px] px-4" style="max-width: 330px;">
         <img :src="item.image" alt="" class="w-full h-40 object-cover rounded-lg">
         <div class="mt-4">
           <h3 class="text-lg font-semibold" style="text-transform: capitalize;">{{ item.name }}</h3>
