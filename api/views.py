@@ -134,13 +134,19 @@ class OrderView(APIView):
         for item in items:
             try:
                 product = Product.objects.get(pk=item.get("id"))
-                Order.objects.create(customer=customer, product=product)
-                product.stock -= 1
+                order = Order.objects.create(customer=customer, product=product)
+                order.quantity = item.get("quantity") or 1
+                order.total = product.price * order.quantity
+                product.stock -= item.get("quantity") or 1
                 product.save()
+                order.save()
+                SMS().send(
+                    customer.phone,
+                    f"Your order {order.uuid} has been placed successfully.",
+                )
             except Product.DoesNotExist:
                 return Response(format(400, "Invalid product"), status=400)
 
-        SMS().send(customer.phone, f"Your order has been placed successfully.")
         return Response(format(201, "Order created"), status=201)
 
     def put(self, request, pk):

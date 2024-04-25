@@ -59,6 +59,7 @@ class Order(models.Model):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, null=True, blank=True
     )
+    quantity = models.IntegerField(default=1)
     uuid = models.UUIDField(unique=True, editable=False, verbose_name="UUID")
 
     def __str__(self):

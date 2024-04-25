@@ -9,7 +9,7 @@ const cart = reactive(process.client ? JSON.parse(localStorage.getItem('cart') |
 
 function addToCart(id: number) {
   if (!process.client) return
-  cart.push(data.value?.body.find((item: any) => item.id === id))
+  cart.push({ ...data.value?.body.find((item: any) => item.id === id), quantity: 1 })
   localStorage.setItem('cart', JSON.stringify(cart))
 }
 

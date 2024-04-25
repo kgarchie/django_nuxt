@@ -19,8 +19,8 @@
         <hr class="mb-4">
         <div class="flex flex-wrap gap-4">
             <ClientOnly>
-                <div v-for="item in items" :key="item.id" class="bg-white p-4 rounded-lg border border-gray-200 w-[350px] px-4"
-                    style="max-width: 330px;">
+                <div v-for="item in items" :key="item.id"
+                    class="bg-white p-4 rounded-lg border border-gray-200 w-[350px] px-4" style="max-width: 330px;">
                     <img :src="item.image" alt="" class="w-full h-40 object-cover rounded-lg">
                     <div class="mt-4">
                         <h3 class="text-lg font-semibold" style="text-transform: capitalize;">{{ item.name }}</h3>
@@ -30,6 +30,15 @@
                             <p class="text-amber-500">{{ item.stock }} in Stock</p>
                             <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
                                 @click="removeFromCart(item.id)">Remove</button>
+                        </div>
+                        <div class="flex justify-between items-center mt-4">
+                            <label for="quantity" class="text-sm">Quantity:</label>
+                            <input type="number" id="quantity" class="w-16 px-2 py-1 border border-gray-200 rounded"
+                            :class="{'bg-red-400': item.quantity > item.stock}"
+                                :value="item.quantity" @input="setQuantity(item.id, () => {
+                                    const target: HTMLInputElement | null = $event?.target as unknown as HTMLInputElement
+                                    return Number(target?.value) || item.quantity
+                                })">
                         </div>
                     </div>
                 </div>
@@ -56,6 +65,19 @@ function removeFromCart(id: number) {
     if (!process.client) return
     const index = items.findIndex((item: any) => item.id === id)
     items.splice(index, 1)
+    localStorage.setItem('cart', JSON.stringify(items))
+}
+
+function setQuantity(itemId: number, num: number | (() => number)) {
+    if (!process.client) return
+    const index = items.findIndex((item: any) => item.id === itemId)
+    
+    if (typeof num === 'function') {
+        items[index].quantity = num()
+    } else {
+        items[index].quantity = num
+    }
+    
     localStorage.setItem('cart', JSON.stringify(items))
 }
 
